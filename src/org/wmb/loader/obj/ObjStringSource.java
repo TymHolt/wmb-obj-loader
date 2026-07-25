@@ -13,7 +13,6 @@ final class ObjStringSource {
         Objects.requireNonNull(sourceString, "Source string is null");
         this.sourceString = sourceString;
         this.sourceStringLength = sourceString.length();
-
     }
 
     void forward() {

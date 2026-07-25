@@ -63,6 +63,6 @@ public final class ObjLoader {
     }
 
     private boolean charCanBeToken(char c) {
-
+        return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '.';
     }
 }
