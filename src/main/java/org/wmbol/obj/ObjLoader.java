@@ -1,4 +1,4 @@
-package org.wmb.loader.obj;
+package org.wmbol.obj;
 
 import java.io.IOException;
 import java.util.ArrayList;

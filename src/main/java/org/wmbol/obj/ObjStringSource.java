@@ -1,4 +1,4 @@
-package org.wmb.loader.obj;
+package org.wmbol.obj;
 
 import java.util.Objects;
 
