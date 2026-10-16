@@ -15,13 +15,17 @@ final class ObjTokenizer {
     }
 
     /**
-     * Tokenizes the next line of the source. May produce a {@link RuntimeException} when tokenization fails.
+     * Tokenizes the next line of the source.
      *
+     * @param warnings A list to add warnings to if any are encountered. May be {@code null}.
      * @return A list containing the tokens. Can be {@code null} when there is no source lef to parse.
      */
-    List<String> nextLine() {
+    List<String> nextLine(List<String> warnings) {
         if (nextIndex >= sourceLength)
             return null;
+
+        if (warnings == null)
+            warnings = new ArrayList<>();
 
         final StringBuilder tokenBuilder = new StringBuilder();
         final List<String> tokens = new ArrayList<>();
@@ -53,8 +57,7 @@ final class ObjTokenizer {
                 continue;
             }
 
-            throw new RuntimeException("Unexpected char '" + currentChar + "'"); // TODO Give Line/Column
-
+            warnings.add("Unexpected char '" + currentChar + "'");
         }
 
         // If string ended we have not added the token yet
