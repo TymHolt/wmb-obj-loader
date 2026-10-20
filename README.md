@@ -2,7 +2,7 @@
 
 The utility library for loading **Wavefront .obj** files in Java for the 
 [World Map Builder](https://github.com/TymHolt/world-map-builder) Project, contained as a dependency in the
-[WMB Graphics Framework]([https://github.com/TymHolt/world-map-builder](https://github.com/TymHolt/wmb-graphics-framework)).
+[wmb-graphics-framework](https://github.com/TymHolt/wmb-graphics-framework).
 
 ## Install
 
