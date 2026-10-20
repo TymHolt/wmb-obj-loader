@@ -1,8 +1,5 @@
 package org.wmbol.obj;
 
-import java.util.ArrayList;
-import java.util.List;
-
 final class ObjTokenizer {
 
     private final String source;
@@ -14,27 +11,31 @@ final class ObjTokenizer {
         this.sourceLength = source.length();
     }
 
-    /**
-     * Tokenizes the next line of the source.
-     *
-     * @param consumer The consumer, or handler, for the loaded data.  Must not be {@code null}.
-     * @return         A list containing the tokens. Can be {@code null} when there is no source lef to parse.
-     */
-    List<String> nextLine(IWmbObjLoadConsumer consumer) {
+    StringTokenStream nextLine(IWmbObjLoadConsumer consumer) {
         if (nextIndex >= sourceLength)
             return null;
 
         final StringBuilder tokenBuilder = new StringBuilder();
-        final List<String> tokens = new ArrayList<>();
+        final StringTokenStream tokens = new StringTokenStream();
         boolean inComment = false;
 
         int currentIndex;
         while ((currentIndex = nextIndex++) < sourceLength) {
             final char currentChar = source.charAt(currentIndex);
 
+            if (currentChar == '/') {
+                if (!tokenBuilder.isEmpty()) {
+                    tokens.append(tokenBuilder.toString());
+                    tokenBuilder.setLength(0);
+                }
+
+                tokens.append("/");
+                continue;
+            }
+
             if (charIsWhitespace(currentChar)) {
                 if (!tokenBuilder.isEmpty()) {
-                    tokens.add(tokenBuilder.toString());
+                    tokens.append(tokenBuilder.toString());
                     tokenBuilder.setLength(0);
                 }
 
@@ -59,7 +60,7 @@ final class ObjTokenizer {
 
         // If string ended we have not added the token yet
         if (!tokenBuilder.isEmpty())
-            tokens.add(tokenBuilder.toString());
+            tokens.append(tokenBuilder.toString());
 
         return tokens;
     }
@@ -69,6 +70,7 @@ final class ObjTokenizer {
     }
 
     private boolean charCanBeToken(char c) {
-        return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '.';
+        return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') ||
+                c == '.' || c == '-' || c =='_';
     }
 }
