@@ -1,6 +1,5 @@
 package org.wmbol.obj;
 
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -9,6 +8,7 @@ import java.util.Objects;
 public final class WmbObjLoader {
 
     private final IWmbObjLoadConsumer consumer;
+    private int geometryDataCount, textureDataCount, normalDataCount;
 
     /**
      * Initialize the loader.
@@ -27,6 +27,10 @@ public final class WmbObjLoader {
      */
     public void load(String sourceString) {
         try {
+            this.geometryDataCount = 0;
+            this.textureDataCount = 0;
+            this.normalDataCount = 0;
+
             final ObjTokenizer tokenizer = new ObjTokenizer(sourceString);
             StringTokenStream tokens;
             while ((tokens = tokenizer.nextLine(this.consumer)) != null) {
@@ -73,6 +77,8 @@ public final class WmbObjLoader {
         if (tokenCount < 3 || tokenCount > 4)
             throw new ObjErrorException("Malformed 'v' type, length " + tokenCount);
 
+        this.geometryDataCount++;
+
         final float x = parseFloat(tokens.consume());
         final float y = parseFloat(tokens.consume());
         final float z = parseFloat(tokens.consume());
@@ -88,6 +94,8 @@ public final class WmbObjLoader {
         if (tokenCount < 1 || tokenCount > 3)
             throw new ObjErrorException("Malformed 'vt' type, length " + tokenCount);
 
+        this.textureDataCount++;
+
         final float u = parseFloat(tokens.consume());
         final float v = !tokens.isEmpty() ? parseFloat(tokens.consume()) : 0.0f;
         final float w = !tokens.isEmpty() ? parseFloat(tokens.consume()) : 0.0f;
@@ -101,6 +109,8 @@ public final class WmbObjLoader {
         final int tokenCount = tokens.getRemaining();
         if (tokenCount != 3)
             throw new ObjErrorException("Malformed 'vn' type, length " + tokenCount);
+
+        this.normalDataCount++;
 
         final float x = parseFloat(tokens.consume());
         final float y = parseFloat(tokens.consume());
@@ -150,6 +160,14 @@ public final class WmbObjLoader {
                 }
             }
         }
+
+        // OBJ indices are 1-based -> We want 0-based
+        v -= 1;
+        vt -= 1;
+        vn -= 1;
+
+        if (v >= this.geometryDataCount || vt >= this.textureDataCount || vn >= this.normalDataCount || v < 0)
+            throw new ObjErrorException(String.format("Vertex indices out of bounds: %d %d %d", v, vt, vn));
 
         result[0] = v;
         result[1] = vt;
