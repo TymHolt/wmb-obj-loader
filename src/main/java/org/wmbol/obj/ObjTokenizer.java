@@ -17,15 +17,12 @@ final class ObjTokenizer {
     /**
      * Tokenizes the next line of the source.
      *
-     * @param warnings A list to add warnings to if any are encountered. May be {@code null}.
-     * @return A list containing the tokens. Can be {@code null} when there is no source lef to parse.
+     * @param consumer The consumer, or handler, for the loaded data.  Must not be {@code null}.
+     * @return         A list containing the tokens. Can be {@code null} when there is no source lef to parse.
      */
-    List<String> nextLine(List<String> warnings) {
+    List<String> nextLine(IWmbObjLoadConsumer consumer) {
         if (nextIndex >= sourceLength)
             return null;
-
-        if (warnings == null)
-            warnings = new ArrayList<>();
 
         final StringBuilder tokenBuilder = new StringBuilder();
         final List<String> tokens = new ArrayList<>();
@@ -57,7 +54,7 @@ final class ObjTokenizer {
                 continue;
             }
 
-            warnings.add("Unexpected char '" + currentChar + "'");
+            consumer.consumeWarning("Unexpected char '" + currentChar + "'");
         }
 
         // If string ended we have not added the token yet
