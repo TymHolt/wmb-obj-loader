@@ -151,7 +151,6 @@ public final class WmbObjLoader {
                 tokens.consume();
                 vn = parseInt(tokens.consume());
             } else {
-                tokens.consume();
                 vt = parseInt(tokens.consume());
 
                 if (tokens.peek().equals("/")) {
@@ -177,16 +176,16 @@ public final class WmbObjLoader {
     private static float parseFloat(String string) throws ObjErrorException {
         try {
             return Float.parseFloat(string);
-        } catch (Exception exception) {
-            throw new ObjErrorException(exception.getMessage());
+        } catch (NumberFormatException numberFormatException) {
+            throw new ObjErrorException("Failed to parse float: " + string);
         }
     }
 
     private static int parseInt(String string) throws ObjErrorException {
         try {
             return Integer.parseInt(string);
-        } catch (Exception exception) {
-            throw new ObjErrorException(exception.getMessage());
+        } catch (NumberFormatException numberFormatException) {
+            throw new ObjErrorException("Failed to parse integer: " + string);
         }
     }
 
